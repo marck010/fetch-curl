@@ -146,7 +146,7 @@ class FetchCurl {
 
     headers = new Headers({ ...headers, ...defautHeaders });
 
-    const headersString: string[] = Object.entries(headers).map((header) => {
+    const headersString: string[] = Object.entries(headers).map(header => {
       const [key, value] = header;
       return `${key}: ${value}`;
     });
