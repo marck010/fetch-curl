@@ -1,0 +1,28 @@
+{
+  "name": "curl-fetch",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "docs": "typedoc --out docs src",
+    "gh-pages": "rimraf docs && npm run docs && gh-pages -d docs",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "lint": "tslint --project \"./tsconfig.json\""
+  },
+  "author": "marck010",
+  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/marck010/curl-fetch.git"
+  },
+  "dependencies": {
+    "http-status": "^1.3.2",
+    "node-libcurl": "^2.0.1",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.3",
+    "gh-pages": "^2.1.1",
+    "typedoc": "^0.15.0"
+  }
+}
