@@ -1,14 +1,17 @@
 {
-  "name": "curl-fetch",
-  "version": "0.0.1",
+  "name": "fetch-curl",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "docs": "typedoc --out docs src",
-    "gh-pages": "rimraf docs && npm run docs && gh-pages -d docs",
-    "build": "tsc",
+    "clear": "rm -rf ./dist",
+    "prebuild": "npm run clear",
+    "build": "tsc --build ./tsconfig.json",
+    "postinstall": "npm run build",
     "build:watch": "tsc --watch",
-    "lint": "tslint --project \"./tsconfig.json\""
+    "lint": "tslint --project \"./tsconfig.json\"",
+    "docs": "typedoc --out docs src",
+    "gh-pages": "rimraf docs && npm run docs && gh-pages -d docs"
   },
   "author": "marck010",
   "license": "ISC",
