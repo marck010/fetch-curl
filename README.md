@@ -1,2 +1,2 @@
-# curl-fetch
-curl-fetch
+# fetch-curl
+fetch-curl
