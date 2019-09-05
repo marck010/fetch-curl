@@ -1,5 +1,7 @@
 interface HeaderKeyValuePair { [k: string]: string | number; }
 
+export type RequestRedirect = 'error' | 'follow' | 'manual';
+
 export class Headers {
   constructor(init?: Headers | HeaderKeyValuePair) {
 
@@ -31,5 +33,3 @@ export class Headers {
   }
 
 }
-
-export type RequestRedirect = 'error' | 'follow' | 'manual';

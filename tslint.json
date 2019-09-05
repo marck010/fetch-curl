@@ -1,0 +1,81 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "node_modules/**"
+        ]
+    },
+    "jsRules": {},
+    "fixRules": {},
+    "rules": {
+        "triple-equals": false,
+        "no-bitwise": false,
+        "no-var-requires": false,
+        "no-string-literal": false,
+        "no-unused-expression": false,
+        "interface-name": [
+            true,
+            "never-prefix"
+        ],
+        "radix": false,
+        "max-line-length": [
+            true,
+            {
+                "limit": 145
+            }
+        ],
+        "object-literal-shorthand": [
+            false
+        ],
+        "arrow-parens": [
+            true,
+            "ban-single-arg-parens"
+        ],
+        "variable-name": [
+            true,
+            "check-format",
+            "allow-leading-underscore",
+            "allow-snake-case",
+            "allow-pascal-case"
+        ],
+        "eofline": false,
+        "object-literal-key-quotes": [
+            true,
+            "consistent"
+        ],
+        "semicolon": [
+            true,
+            "always"
+        ],
+        "indent": [
+            true,
+            "spaces",
+            4
+        ],
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "member-ordering": false,
+        "ordered-imports": [
+            true,
+            {
+                "import-sources-order": "any",
+                "named-imports-order": "any",
+                "grouped-imports": true
+            }
+        ],
+        "object-literal-sort-keys": false,
+        "trailing-comma": [
+            false,
+            {
+                "multiline": "always",
+                "singleline": "never"
+            }
+        ]
+    },
+    "rulesDirectory": []
+}

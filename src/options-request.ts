@@ -9,10 +9,9 @@ export interface OptionsRequest {
   redirect?: RequestRedirect;
   proxy?: string;
   compress?: boolean;
-  follow?: number;
   size?: number;
   timeout?: number;
+  follow?: number;
   verbose?: boolean;
-  allowRetry?: boolean;
   version?: number;
 }

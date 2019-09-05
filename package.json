@@ -4,7 +4,7 @@
     "email": "marck010@hotmail.com"
   },
   "name": "fetch-curl",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "node-libcurl abstraction to api fetch",
   "main": "src/index.ts",
   "license": "ISC",
@@ -25,7 +25,8 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "@types/node": "^12.7.3",
+    "@types/node": "^12.7.4",
+    "express": "^4.17.1",
     "gh-pages": "^2.1.1",
     "typedoc": "^0.15.0",
     "typescript": "^3.6.2"
