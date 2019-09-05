@@ -47,7 +47,7 @@ class FetchCurl {
       timeout: 60000,
       proxyType: 'https',
       useProxy: false,
-      httpVersion: curlOptions.HTTP_2,
+      httpVersion: curlOptions.HTTP_1_1,
       redirect: 'follow'
     };
 
