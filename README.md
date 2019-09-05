@@ -51,23 +51,17 @@ const json = res.json();
 
 #### Default Setings
 
-```json
+```
 {
-  query?: any;
   body?: any;
   headers?: Headers;
-  url?: string;
   method?: string;
   redirect?: RequestRedirect;
   proxy?: string;
-  compress?: boolean;
   follow?: number;
-  size?: number;
   timeout?: number;
   verbose?: boolean;
-  version?: number;
+  version?: number; 
 }
 ```
-
-console.log(json)
 ```
