@@ -104,7 +104,7 @@ export class Request {
         return {
             verbose: false,
             method: 'GET',
-            maxRedirects: 5,
+            folow: 5,
             timeout: 60000,
             proxyType: 'https',
             useProxy: false,
@@ -175,7 +175,7 @@ export class Request {
         if (redirect && redirect === 'follow') {
             const alowRedirect = 1;
             this._curl.setOpt(CurlOptions.FOLLOWLOCATION, alowRedirect);
-            this._curl.setOpt(CurlOptions.MAXREDIRS, this._options.follow || this.default.maxRedirects);
+            this._curl.setOpt(CurlOptions.MAXREDIRS, this._options.follow || this.default.folow);
         }
 
     }

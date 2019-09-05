@@ -2,7 +2,7 @@ import { RequestRedirect } from './custom-types';
 
 export interface DefaulSetings {
   method: string;
-  maxRedirects: number;
+  folow: number;
   redirect: RequestRedirect;
   verbose: boolean;
   useProxy: boolean;
