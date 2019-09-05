@@ -51,23 +51,15 @@ const json = res.json();
 
 #### Default Setings
 
-```json
-{
-  query?: any;
-  body?: any;
-  headers?: Headers;
-  url?: string;
-  method?: string;
-  redirect?: RequestRedirect;
-  proxy?: string;
-  compress?: boolean;
-  follow?: number;
-  size?: number;
-  timeout?: number;
-  verbose?: boolean;
-  version?: number;
-}
 ```
-
-console.log(json)
+{
+    verbose: false,
+    method: 'GET',
+    folow: 5,
+    timeout: 60000,
+    proxyType: 'https',
+    useProxy: false,
+    version: CurlOptions.HTTP_1_1,
+    redirect: 'follow'
+}
 ```
