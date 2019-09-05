@@ -53,15 +53,13 @@ const json = res.json();
 
 ```
 {
-  body?: any;
-  headers?: Headers;
-  method?: string;
-  redirect?: RequestRedirect;
-  proxy?: string;
-  follow?: number;
-  timeout?: number;
-  verbose?: boolean;
-  version?: number; 
+    verbose: false,
+    method: 'GET',
+    folow: 5,
+    timeout: 60000,
+    proxyType: 'https',
+    useProxy: false,
+    version: CurlOptions.HTTP_1_1,
+    redirect: 'follow'
 }
-```
 ```
