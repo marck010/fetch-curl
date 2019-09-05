@@ -12,16 +12,7 @@ npm i fetch-curl --save
 
 ## Common Usage
 
-### GET Text
-
-```js
-const res = await fetch('https://github.com/');
-const body = res.text();
-
-console.log(body)
-```
-
-### Simple Get
+### GET
 
 ```js
 const res = await fetch('https://restcountries-v1.p.rapidapi.com/all');
@@ -51,7 +42,7 @@ const json = res.json();
 
 #### Default Setings
 
-```
+```json
 {
     verbose: false,
     method: 'GET',
