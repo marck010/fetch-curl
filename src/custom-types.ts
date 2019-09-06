@@ -1,9 +1,14 @@
-interface HeaderKeyValuePair { [k: string]: string | number; }
+export interface HeadersInit {
+  [k: string]: string | number | any;
+}
 
 export type RequestRedirect = 'error' | 'follow' | 'manual';
+export type MethodHttp = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'OPTION' | 'CONNECT';
 
 export class Headers {
-  constructor(init?: Headers | HeaderKeyValuePair) {
+  [k: string]: string | number | any;
+
+  constructor(init?: HeadersInit | undefined) {
 
     if (init) {
       const headerNames = Object.keys(init);
@@ -18,17 +23,17 @@ export class Headers {
     return this[name];
   }
 
-  public append(key, value) {
+  public append(key: string, value: string | number) {
     if (key) {
       this[key] = value;
     }
   }
 
-  public has(key) {
+  public has(key: string) {
     return !!this[key];
   }
 
-  public raw() {
+  public raw(): Headers {
     return this;
   }
 

@@ -4,7 +4,6 @@ import * as urlLib from 'url';
 import * as status from 'http-status';
 
 import { CurlOptions } from './curl-options';
-
 import { OptionsRequest, DefaulSetings, Headers, ResponseInit } from './types';
 
 export class Request {
@@ -37,48 +36,51 @@ export class Request {
 
                 this._curl.on('end', (statusCode, body, headers: Headers[]) => {
 
-                    const json = () => {
-                        
-                        if (typeof body === 'string') {
-                            return body ? JSON.parse(body) : '';
-                        }
+                    try {
+                        const json = (): any => {
 
-                        throw new Error('Body is not string');
+                            if (typeof body === 'string') {
+                                return body ? JSON.parse(body) : '';
+                            }
 
-                    };
+                            return {};
+                        };
 
-                    const text = (): string => {
+                        const text = (): string => {
 
-                        if (typeof body === 'string') {
-                            return body;
-                        }
+                            if (typeof body === 'string') {
+                                return body;
+                            }
 
-                        throw new Error('Body is not string');
+                            return '';
+                        };
 
-                    };
+                        const countRedirects = Number(this._curl.getInfo('REDIRECT_COUNT'));
 
-                    const countRedirects = Number(this._curl.getInfo('REDIRECT_COUNT'));
+                        const response: ResponseInit = {
+                            json,
+                            text,
+                            headers: new Headers(headers[0]),
+                            ok: statusCode >= 200 && statusCode < 300,
+                            redirected: countRedirects > 0,
+                            countRedirect: countRedirects,
+                            status: statusCode,
+                            statusText: status[statusCode],
+                            url: String(this._curl.getInfo('EFFECTIVE_URL')),
+                        };
 
-                    const response: ResponseInit = {
-                        json,
-                        text,
-                        headers: new Headers(headers[0]),
-                        ok: statusCode >= 200 && statusCode < 300,
-                        redirected: countRedirects > 0,
-                        countRedirect: countRedirects,
-                        status: statusCode,
-                        statusText: status[statusCode],
-                        url: String(this._curl.getInfo('EFFECTIVE_URL')),
-                    };
+                        this._curl.close();
 
-                    this._curl.close();
+                        resolve(response);
 
-                    resolve(response);
+                    } catch (error) {
+                        reject(error);
+                    }
                 });
 
                 this._curl.on('error', (error, errorCode) => {
                     this._curl.close();
-                    throw error;
+                    reject(error);
                 });
 
                 this._curl.perform();
@@ -116,7 +118,7 @@ export class Request {
     private get defaultHeaders(): Headers {
 
         const bodyString = this.bodyString;
-        const bodyLenght = bodyString ? bodyString.length : 0;
+        const bodyLenght = bodyString ? Buffer.byteLength(bodyString, 'utf8') : 0;
 
         return new Headers({ 'content-length': bodyLenght });
     }
@@ -184,7 +186,7 @@ export class Request {
         let { headers } = this.options;
 
         if (!headers) {
-            headers = new Headers();
+            headers = {};
         }
 
         headers = new Headers({ ...headers, ...this.defaultHeaders });

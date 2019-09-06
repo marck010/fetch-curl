@@ -1,11 +1,12 @@
 import { Headers, RequestRedirect } from './custom-types';
+import { MethodHttp } from './types';
 
 export interface OptionsRequest {
   query?: any;
   body?: any;
-  headers?: Headers;
+  headers?: HeadersInit;
   url?: string;
-  method?: string;
+  method?: MethodHttp;
   redirect?: RequestRedirect;
   proxy?: string;
   compress?: boolean;

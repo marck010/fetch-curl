@@ -37,6 +37,24 @@ class App {
                 next(error);
             }
         });
+
+        route.post('/test/post', (req, res, next) => {
+
+            const filter = req;
+            try {
+
+                res.status(200);
+                res.json({
+                    headers: filter.headers,
+                    body: filter.body,
+                    query: filter.query,
+                    url: filter.url
+                });
+
+            } catch (error) {
+                next(error);
+            }
+        });
         this.app.use('/', route);
     }
 

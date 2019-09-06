@@ -1,7 +1,7 @@
-import { RequestRedirect } from './custom-types';
+import { RequestRedirect, MethodHttp } from './custom-types';
 
 export interface DefaulSetings {
-  method: string;
+  method: MethodHttp;
   folow: number;
   redirect: RequestRedirect;
   verbose: boolean;
