@@ -54,3 +54,37 @@ const json = res.json();
     redirect: 'follow'
 }
 ```
+
+### All Options
+
+```
+{
+  body?: any;
+  headers?: Headers;
+  method?: string;
+  redirect?: RequestRedirect;
+  proxy?: string;
+  timeout?: number;
+  follow?: number;
+  verbose?: boolean;
+  version?: number;
+}
+
+```
+> body - Body request
+
+> headers - Headers request
+
+> method - Method Http
+
+> redirect - To folow redirect 'follow'. 'error' & 'manual' not implemented yet. 
+
+> proxy - Proxy Url
+
+> timeout - Time out request
+
+> follow - Max redirects
+
+> verbose - Logs curl
+
+> version - Http Version. Http1, Http1.1 Http2 Suported
