@@ -50,7 +50,7 @@ const json = res.json();
     timeout: 60000,
     proxyType: 'https',
     useProxy: false,
-    version: CurlOptions.HTTP_1_1,
+    version: 2, // 1 - Http 1 | 2 - Http 1.1 | 3 - Http 2
     redirect: 'follow'
 }
 ```
