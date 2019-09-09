@@ -1,8 +1,8 @@
 
-import * as Types from './types';
-import {Request} from './request';
+import { OptionsRequest, Response } from './types';
+import { Request } from './request';
 
-const fetch = (url: string, options?: Types.OptionsRequest): Promise<Types.Response> => {
+const fetch = (url: string, options?: OptionsRequest): Promise<Response> => {
   if (!options) {
     options = {};
   }
@@ -10,5 +10,6 @@ const fetch = (url: string, options?: Types.OptionsRequest): Promise<Types.Respo
   return new Request(url, options).send();
 };
 
-export {Types};
+export * from './types';
+
 export default fetch;
