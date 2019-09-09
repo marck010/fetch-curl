@@ -11,6 +11,7 @@
   "repository": {
     "url": "https://github.com/marck010/curl-fetch.git"
   },
+  "types": "src/index.ts",
   "keywords": [
     "node-curl",
     "curl",
