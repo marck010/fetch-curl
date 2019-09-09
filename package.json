@@ -6,7 +6,7 @@
   "name": "fetch-curl",
   "version": "0.3.5",
   "description": "node-libcurl abstraction to api fetch",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "license": "ISC",
   "repository": {
     "url": "https://github.com/marck010/curl-fetch.git"
