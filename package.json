@@ -37,10 +37,11 @@
     "typedoc": "^0.15.0"
   },
   "scripts": {
-    "test": "tsc && node_modules/mocha/bin/mocha dist/tests/test.js",
+    "test": "npm run build && node_modules/mocha/bin/mocha --exit dist/tests/test.js",
     "clear": "rimraf ./dist",
     "prebuild": "npm run clear",
     "build": "node_modules/typescript/bin/tsc --build ./tsconfig.json",
+    "preversion": "npm test",
     "postinstall": "npm run build",
     "build:watch": "node_modules/typescript/bin/tsc --watch",
     "lint": "tslint --project \"./tsconfig.json\"",
