@@ -39,9 +39,9 @@
     "test": "npm run build && node_modules/mocha/bin/mocha --exit dist/tests/test.js",
     "clear": "rimraf ./dist",
     "prebuild": "npm run clear",
-    "build": "node_modules/typescript/bin/tsc --build ./tsconfig.json",
+    "build": "tsc --build ./tsconfig.json",
     "preversion": "npm test",
-    "build:watch": "node_modules/typescript/bin/tsc --watch",
+    "build:watch": "tsc --watch",
     "lint": "tslint --project \"./tsconfig.json\"",
     "docs": "typedoc --out docs src",
     "gh-pages": "rimraf docs && npm run docs && gh-pages -d docs"
