@@ -41,7 +41,6 @@
     "clear": "rimraf ./dist",
     "prebuild": "npm run clear",
     "build": "node_modules/typescript/bin/tsc --build ./tsconfig.json",
-    "preversion": "npm test",
     "postinstall": "npm run build",
     "build:watch": "node_modules/typescript/bin/tsc --watch",
     "lint": "tslint --project \"./tsconfig.json\"",

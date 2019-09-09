@@ -1,4 +1,4 @@
 dist
 .vscode
 docs
-./src/tests
+src/tests
