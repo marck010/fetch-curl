@@ -1,6 +1,6 @@
 ## Motivation
 
-First the difficulty was making http2 requests on node through an http1 proxy. Libcurl abstracts this for us? So why not curl node With this in mind, I decided to create a lib that uses background curl but with the fetch API syntax
+First the difficulty was making http2 requests on node through an http1 proxy. Libcurl abstracts this for us. So why not curl? With this in mind, I decided to create a lib that uses background curl but with the fetch API syntax.
 
 ## Installing
 
@@ -12,7 +12,7 @@ npm i fetch-curl --save
 
 ## Common Usage
 
-### GET
+### Simple GET
 
 ```js
 const res = await fetch('https://restcountries-v1.p.rapidapi.com/all');
@@ -77,7 +77,7 @@ const json = res.json();
 
 > method - Method Http
 
-> redirect - To folow redirect 'follow'. 'error' & 'manual' not implemented yet. 
+> redirect - To folow redirect 'follow'.
 
 > proxy - Proxy Url
 

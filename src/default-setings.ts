@@ -1,4 +1,4 @@
-import { RequestRedirect, MethodHttp } from './custom-types';
+import { RequestRedirect, MethodHttp, HttpVersion } from './custom-types';
 
 export interface DefaulSetings {
   method: MethodHttp;
@@ -8,5 +8,5 @@ export interface DefaulSetings {
   useProxy: boolean;
   proxyType: string;
   timeout: number;
-  version: number;
+  version: HttpVersion;
 }

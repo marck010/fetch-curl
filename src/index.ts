@@ -2,11 +2,7 @@
 import * as Types from './types';
 import {Request} from './request';
 
-const fetch = (url: string, options?: Types.OptionsRequest): Promise<Types.ResponseInit> => {
-  if (!url || typeof url !== 'string') {
-    throw new Error('Url must be string');
-  }
-
+const fetch = (url: string, options?: Types.OptionsRequest): Promise<Types.Response> => {
   if (!options) {
     options = {};
   }

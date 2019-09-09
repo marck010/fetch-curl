@@ -1,15 +1,27 @@
 
-import { Curl } from 'node-libcurl';
+import { Curl, CurlCode } from 'node-libcurl';
 import * as urlLib from 'url';
-import * as status from 'http-status';
+import * as queryString from 'querystring';
 
-import { CurlOptions } from './curl-options';
-import { OptionsRequest, DefaulSetings, Headers, ResponseInit } from './types';
+import {
+    OptionsRequest,
+    DefaulSetings,
+    Headers,
+    Response,
+    HeadersInit,
+    FetchError
+} from './types';
 
 export class Request {
 
-    private readonly _curl: Curl;
-    private readonly _options: OptionsRequest;
+    public readonly _curl: Curl;
+    public readonly _options: OptionsRequest;
+
+    private httpVersionMap: { [key: string]: number } = {
+        '1': 1,
+        '1.1': 2,
+        '2': 3
+    };
 
     constructor(url: string, options: OptionsRequest) {
 
@@ -28,65 +40,40 @@ export class Request {
 
     }
 
-    public send(): Promise<ResponseInit> {
+    public send(): Promise<Response> {
 
         return new Promise((resolve, reject) => {
 
             try {
 
-                this._curl.on('end', (statusCode, body, headers: Headers[]) => {
+                this._curl.on('end', (statusCode: number, body: any, headers: Headers[]) => {
 
                     try {
-                        const json = (): any => {
+                        const response = new Response(this, statusCode, body, headers);
 
-                            if (typeof body === 'string') {
-                                return body ? JSON.parse(body) : '';
-                            }
-
-                            return {};
-                        };
-
-                        const text = (): string => {
-
-                            if (typeof body === 'string') {
-                                return body;
-                            }
-
-                            return '';
-                        };
-
-                        const countRedirects = Number(this._curl.getInfo('REDIRECT_COUNT'));
-
-                        const response: ResponseInit = {
-                            json,
-                            text,
-                            headers: new Headers(headers[0]),
-                            ok: statusCode >= 200 && statusCode < 300,
-                            redirected: countRedirects > 0,
-                            countRedirect: countRedirects,
-                            status: statusCode,
-                            statusText: status[statusCode],
-                            url: String(this._curl.getInfo('EFFECTIVE_URL')),
-                        };
-
-                        this._curl.close();
+                        if (response.isRedirect(statusCode) && this.options.redirect == 'error') {
+                            reject(new FetchError(`redirect mode is set to error: ${response.url}`, 'no-redirect'));
+                        }
 
                         resolve(response);
 
                     } catch (error) {
-                        reject(error);
+                        reject(new FetchError(error.message, 'system', error));
+                    } finally {
+                        this._curl.close();
                     }
+
                 });
 
-                this._curl.on('error', (error, errorCode) => {
+                this._curl.on('error', (error, errorCode: CurlCode) => {
                     this._curl.close();
-                    reject(error);
+                    reject(new FetchError(error.message, 'curl-error', error, errorCode));
                 });
 
                 this._curl.perform();
 
             } catch (e) {
-                reject(e);
+                reject(new FetchError(e.message, 'fetch-curl-error', e));
             }
 
         });
@@ -99,7 +86,25 @@ export class Request {
     private get bodyString(): string {
         const { body } = this.options;
 
-        return typeof body !== 'string' ? JSON.stringify(body) : body;
+        if (typeof body === 'string') {
+            return body;
+        }
+
+        if (body == undefined) {
+            return '';
+        }
+
+        const contentType = this.options.headers ? this.options.headers['content-type'] as string : '';
+
+        if (contentType.includes('aplication/json')) {
+            return JSON.stringify(body);
+        }
+
+        if (contentType.includes('application/x-www-form-urlencoded')) {
+            return queryString.stringify(body);
+        }
+
+        return '';
     }
 
     private get default(): DefaulSetings {
@@ -110,25 +115,25 @@ export class Request {
             timeout: 60000,
             proxyType: 'https',
             useProxy: false,
-            version: CurlOptions.HTTP_1_1,
-            redirect: 'follow'
-        };;
+            version: 1.1,
+            redirect: 'manual'
+        };
     }
 
-    private get defaultHeaders(): Headers {
+    private get defaultHeaders(): HeadersInit {
 
         const bodyString = this.bodyString;
         const bodyLenght = bodyString ? Buffer.byteLength(bodyString, 'utf8') : 0;
 
-        return new Headers({ 'content-length': bodyLenght });
+        return { 'content-length': bodyLenght };
     }
 
     private setUrl(url: string): void {
         if (!url) {
-            throw new Error('Url missing');
+            throw new FetchError('Url missing', 'url-missing');
         }
 
-        this._curl.setOpt(CurlOptions.URL, url);
+        this._curl.setOpt(Curl.option.URL, url);
     }
 
     private setMethod(): void {
@@ -136,7 +141,7 @@ export class Request {
         method = method || this.default.method;
 
         if (method) {
-            this._curl.setOpt(CurlOptions.CUSTOMREQUEST, method);
+            this._curl.setOpt(Curl.option.CUSTOMREQUEST, method);
         }
     }
 
@@ -147,18 +152,17 @@ export class Request {
             return;
         }
 
-        this._curl.setOpt(CurlOptions.POSTFIELDS, this.bodyString);
-
+        this._curl.setOpt(Curl.option.POSTFIELDS, this.bodyString);
     }
 
     private setProxy(): void {
-        let { proxy } = this.options;
+        const { proxy } = this.options;
 
         if (!proxy) {
             return;
         }
 
-        this._curl.setOpt(CurlOptions.PROXY, proxy);
+        this._curl.setOpt(Curl.option.PROXY, proxy);
 
         const parsedUrl: urlLib.Url = urlLib.parse(proxy);
         if (!parsedUrl.protocol) {
@@ -166,18 +170,29 @@ export class Request {
         }
 
         const proxyType = parsedUrl.protocol.replace(':', '');
-        this._curl.setOpt(CurlOptions.PROXYTYPE, proxyType);
+        this._curl.setOpt(Curl.option.PROXYTYPE, proxyType);
     }
 
     private setFollowLocation(): void {
         let { redirect } = this.options;
+        const alowRedirect = true;
 
         redirect = redirect || this.default.redirect;
 
+        if (redirect && redirect === 'manual') {
+            this._curl.setOpt(Curl.option.FOLLOWLOCATION, 0);
+        }
+
+        if (redirect && redirect === 'error') {
+            this._curl.setOpt(Curl.option.FOLLOWLOCATION, !alowRedirect);
+            this._curl.setOpt(Curl.option.MAXREDIRS, 0);
+        }
+
         if (redirect && redirect === 'follow') {
-            const alowRedirect = 1;
-            this._curl.setOpt(CurlOptions.FOLLOWLOCATION, alowRedirect);
-            this._curl.setOpt(CurlOptions.MAXREDIRS, this._options.follow || this.default.folow);
+            const maxRedirects = this._options.follow || this.default.folow;
+
+            this._curl.setOpt(Curl.option.FOLLOWLOCATION, alowRedirect);
+            this._curl.setOpt(Curl.option.MAXREDIRS, maxRedirects);
         }
 
     }
@@ -189,20 +204,20 @@ export class Request {
             headers = {};
         }
 
-        headers = new Headers({ ...headers, ...this.defaultHeaders });
+        headers = { ...headers, ...this.defaultHeaders };
 
         const headersString: string[] = Object.entries(headers).map(header => {
             const [key, value] = header;
             return `${key}: ${value}`;
         });
 
-        this._curl.setOpt(CurlOptions.HTTPHEADER, headersString);
+        this._curl.setOpt(Curl.option.HTTPHEADER, headersString);
     }
 
     private setVerbose(): void {
         let { verbose } = this.options;
         verbose = verbose || this.default.verbose;
-        this._curl.setOpt(CurlOptions.VERBOSE, verbose);
+        this._curl.setOpt(Curl.option.VERBOSE, verbose);
     }
 
     private setHttpVersion(): void {
@@ -211,7 +226,7 @@ export class Request {
         version = version || this.default.version;
 
         if (version) {
-            this._curl.setOpt(CurlOptions.HTTP_VERSION, version);
+            this._curl.setOpt(Curl.option.HTTP_VERSION, this.httpVersionMap[version]);
         }
 
     }
@@ -221,7 +236,7 @@ export class Request {
         timeout = timeout || this.default.timeout;
 
         if (timeout) {
-            this._curl.setOpt(CurlOptions.TIMEOUT_MS, timeout);
+            this._curl.setOpt(Curl.option.TIMEOUT_MS, timeout);
         }
     }
 }
