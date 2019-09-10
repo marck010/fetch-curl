@@ -96,7 +96,7 @@ export class Request {
 
         const contentType = this.options.headers ? this.options.headers['content-type'] as string : '';
 
-        if (contentType.includes('aplication/json')) {
+        if (contentType.includes('application/json')) {
             return JSON.stringify(body);
         }
 
