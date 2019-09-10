@@ -4,7 +4,7 @@
     "email": "marck010@hotmail.com"
   },
   "name": "fetch-curl",
-  "version": "0.3.7",
+  "version": "0.4.0",
   "description": "node-libcurl abstraction to api fetch",
   "main": "dist/index.js",
   "license": "ISC",
