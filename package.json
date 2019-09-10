@@ -40,7 +40,7 @@
     "test": "npm run build && node_modules/mocha/bin/mocha --exit dist/tests/test.js",
     "clear": "rimraf ./dist",
     "prebuild": "npm run clear",
-    "build": "tsc --build ./tsconfig.json",
+    "build": "tsc -build ./tsconfig.json && tsc --declaration",
     "preversion": "npm test",
     "build:watch": "tsc --watch",
     "lint": "tslint --project \"./tsconfig.json\"",
