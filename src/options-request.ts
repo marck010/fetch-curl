@@ -1,7 +1,7 @@
-import {  CurlOption } from 'node-libcurl';
+import { CurlOption } from "node-libcurl";
 
-import { RequestRedirect, HttpVersion, MethodHttp } from './custom-types';
-import { HeadersInit } from './headers';
+import { RequestRedirect, HttpVersion, MethodHttp } from "./custom-types";
+import { HeadersInit } from "./headers";
 
 export interface OptionsRequest {
   // query?: any;

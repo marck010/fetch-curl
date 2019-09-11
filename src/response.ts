@@ -1,10 +1,9 @@
-import * as status from 'http-status';
+import * as status from "http-status";
 
-import { Headers } from './headers';
-import { Request } from './request';
+import { Headers } from "./headers";
+import { Request } from "./request";
 
 export class Response {
-
   public headers: Headers;
   public ok: boolean;
   public redirected?: boolean;
@@ -16,8 +15,7 @@ export class Response {
   public text: () => string;
 
   constructor(req: Request, statusCode: number, body: any, headers: Headers[]) {
-
-    const countRedirects = Number(req._curl.getInfo('REDIRECT_COUNT'));
+    const countRedirects = Number(req._curl.getInfo("REDIRECT_COUNT"));
 
     this.json = this.getFuncJson(body);
     this.text = this.getFuncText(body);
@@ -27,30 +25,34 @@ export class Response {
     this.countRedirect = countRedirects;
     this.status = statusCode;
     this.statusText = status[statusCode];
-    this.url = String(req._curl.getInfo('EFFECTIVE_URL'));
-
+    this.url = String(req._curl.getInfo("EFFECTIVE_URL"));
   }
 
   public isRedirect(code) {
-    return code === 301 || code === 302 || code === 303 || code === 307 || code === 308;
+    return (
+      code === 301 ||
+      code === 302 ||
+      code === 303 ||
+      code === 307 ||
+      code === 308
+    );
   }
 
   private getFuncText(body: any) {
     return (): string => {
-      if (typeof body === 'string') {
+      if (typeof body === "string") {
         return body;
       }
-      return '';
+      return "";
     };
   }
 
   private getFuncJson(body: any) {
     return (): any => {
-      if (typeof body === 'string') {
-        return body ? JSON.parse(body) : '';
+      if (typeof body === "string") {
+        return body ? JSON.parse(body) : "";
       }
       return {};
     };
   }
-
 }
