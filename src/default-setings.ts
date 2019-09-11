@@ -1,4 +1,4 @@
-import { RequestRedirect, MethodHttp, HttpVersion } from './custom-types';
+import { RequestRedirect, MethodHttp, HttpVersion } from "./custom-types";
 
 export interface DefaulSetings {
   method: MethodHttp;

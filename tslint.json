@@ -57,7 +57,7 @@
         ],
         "quotemark": [
             true,
-            "single"
+            "double"
         ],
         "member-ordering": false,
         "ordered-imports": [
