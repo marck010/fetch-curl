@@ -1,3 +1,6 @@
 .vscode
 docs
-./src/tests
+src
+coverage
+.nyc_output
+dist/tests
