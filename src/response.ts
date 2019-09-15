@@ -28,14 +28,8 @@ export class Response {
     this.url = String(req._curl.getInfo("EFFECTIVE_URL"));
   }
 
-  public isRedirect(code) {
-    return (
-      code === 301 ||
-      code === 302 ||
-      code === 303 ||
-      code === 307 ||
-      code === 308
-    );
+  public isRedirect(code: number) {
+    return code >= 301 && code <= 308;
   }
 
   private getFuncText(body: any) {

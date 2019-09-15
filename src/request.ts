@@ -13,7 +13,8 @@ import {
 
 export class Request {
   public readonly _curl: Curl;
-  public readonly _options: OptionsRequest;
+
+  private readonly _options: OptionsRequest;
 
   private httpVersionMap: { [key: string]: number } = {
     "1": 1,
@@ -39,32 +40,29 @@ export class Request {
   public send(): Promise<Response> {
     return new Promise((resolve, reject) => {
       try {
-        this._curl.on(
-          "end",
-          (statusCode: number, body: any, headers: Headers[]) => {
-            try {
-              const response = new Response(this, statusCode, body, headers);
+        this._curl.on("end", (statusCode: number, body: any, headers: Headers[]) => {
+          try {
+            const response = new Response(this, statusCode, body, headers);
 
-              if (
-                response.isRedirect(statusCode) &&
-                this.options.redirect == "error"
-              ) {
-                reject(
-                  new FetchError(
-                    `redirect mode is set to error: ${response.url}`,
-                    "no-redirect"
-                  )
-                );
-              }
-
-              resolve(response);
-            } catch (error) {
-              reject(new FetchError(error.message, "system", error));
-            } finally {
-              this._curl.close();
+            if (
+              response.isRedirect(statusCode) &&
+              this.options.redirect == "error"
+            ) {
+              reject(
+                new FetchError(
+                  `redirect mode is set to error: ${response.url}`,
+                  "no-redirect"
+                )
+              );
             }
+
+            resolve(response);
+          } catch (error) {
+            reject(new FetchError(error.message, "system", error));
+          } finally {
+            this._curl.close();
           }
-        );
+        });
 
         this._curl.on("error", (error, errorCode: CurlCode) => {
           this._curl.close();
@@ -108,17 +106,15 @@ export class Request {
     return "";
   }
 
-  private get default(): DefaulSetings {
-    return {
-      verbose: false,
-      method: "GET",
-      folow: 5,
-      timeout: 60000,
-      proxyType: "https",
-      useProxy: false,
-      version: 1.1,
-      redirect: "manual"
-    };
+  private get headerStringArray(): string[] {
+    return Object.entries(this.options.headers || []).map(header => {
+      const [key, value] = header;
+      return `${key}: ${value}`;
+    });
+  }
+
+  private get default(): typeof DefaulSetings {
+    return DefaulSetings;
   }
 
   private get defaultHeaders(): HeadersInit {
@@ -126,6 +122,18 @@ export class Request {
     const bodyLenght = bodyString ? Buffer.byteLength(bodyString, "utf8") : 0;
 
     return { "content-length": bodyLenght };
+  }
+
+  private get headers() {
+    let { headers } = this.options;
+
+    if (!headers) {
+      headers = {};
+    }
+
+    headers = { ...headers, ...this.defaultHeaders };
+
+    return headers;
   }
 
   private setUrl(url: string): void {
@@ -165,6 +173,7 @@ export class Request {
     this._curl.setOpt(Curl.option.PROXY, proxy);
 
     const parsedUrl: urlLib.Url = urlLib.parse(proxy);
+
     if (!parsedUrl.protocol) {
       throw new Error("Proxy protocol missing");
     }
@@ -180,7 +189,7 @@ export class Request {
     redirect = redirect || this.default.redirect;
 
     if (redirect && redirect === "manual") {
-      this._curl.setOpt(Curl.option.FOLLOWLOCATION, 0);
+      this._curl.setOpt(Curl.option.FOLLOWLOCATION, !alowRedirect);
     }
 
     if (redirect && redirect === "error") {
@@ -197,15 +206,8 @@ export class Request {
   }
 
   private setHeaders(): void {
-    let { headers } = this.options;
 
-    if (!headers) {
-      headers = {};
-    }
-
-    headers = { ...headers, ...this.defaultHeaders };
-
-    const headersString: string[] = Object.entries(headers).map(header => {
+    const headersString: string[] = Object.entries(this.headers).map(header => {
       const [key, value] = header;
       return `${key}: ${value}`;
     });

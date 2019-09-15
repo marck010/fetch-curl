@@ -3,4 +3,4 @@ docs
 src
 coverage
 .nyc_output
-dist/tests
+tests
