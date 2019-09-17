@@ -3,7 +3,6 @@ import * as sinon from "sinon";
 import { Curl } from "node-libcurl";
 import * as urlLib from "url";
 
-import fetch from "../../src";
 import { Request } from "../../src/request";
 import { OptionsRequest, HeadersInit, Response, Headers } from "../../src/types";
 

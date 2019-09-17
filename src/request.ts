@@ -1,4 +1,4 @@
-import { Curl, CurlCode } from "node-libcurl";
+import { Curl, CurlCode, CurlHttpVersion } from "node-libcurl";
 import * as urlLib from "url";
 import * as queryString from "querystring";
 
@@ -17,9 +17,9 @@ export class Request {
   private readonly _options: OptionsRequest;
 
   private httpVersionMap: { [key: string]: number } = {
-    "1": 1,
-    "1.1": 2,
-    "2": 3
+    "1": CurlHttpVersion.V1_0,
+    "1.1": CurlHttpVersion.V1_1,
+    "2": CurlHttpVersion.V2_0
   };
 
   constructor(url: string, options: OptionsRequest) {
