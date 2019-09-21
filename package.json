@@ -7,11 +7,11 @@
   "version": "0.4.1",
   "description": "node-libcurl abstraction to api fetch",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "ISC",
   "repository": {
     "url": "https://github.com/marck010/curl-fetch.git"
   },
-  "types": "src/index.ts",
   "keywords": [
     "node-curl",
     "curl",
@@ -45,7 +45,7 @@
     "sinon": "^7.4.2",
     "source-map-support": "^0.5.13",
     "ts-mocha": "^6.0.0",
-    "ts-node": "^8.3.0",
+    "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.15.0",

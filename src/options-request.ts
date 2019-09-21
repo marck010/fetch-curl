@@ -1,5 +1,3 @@
-import { CurlOption } from "node-libcurl";
-
 import { RequestRedirect, HttpVersion, MethodHttp } from "./custom-types";
 import { HeadersInit } from "./headers";
 

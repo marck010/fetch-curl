@@ -107,7 +107,9 @@ export class Request {
   }
 
   private get headerStringArray(): string[] {
-    return Object.entries(this.options.headers || []).map(header => {
+    const headers = { ...this.options.headers, ...this.defaultHeaders };
+
+    return Object.entries(headers || []).map(header => {
       const [key, value] = header;
       return `${key}: ${value}`;
     });
@@ -122,18 +124,6 @@ export class Request {
     const bodyLenght = bodyString ? Buffer.byteLength(bodyString, "utf8") : 0;
 
     return { "content-length": bodyLenght };
-  }
-
-  private get headers() {
-    let { headers } = this.options;
-
-    if (!headers) {
-      headers = {};
-    }
-
-    headers = { ...headers, ...this.defaultHeaders };
-
-    return headers;
   }
 
   private setUrl(url: string): void {
@@ -207,11 +197,7 @@ export class Request {
 
   private setHeaders(): void {
 
-    const headersString: string[] = Object.entries(this.headers).map(header => {
-      const [key, value] = header;
-      return `${key}: ${value}`;
-    });
-
+    const headersString: string[] = this.headerStringArray;
     this._curl.setOpt(Curl.option.HTTPHEADER, headersString);
   }
 
