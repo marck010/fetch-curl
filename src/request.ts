@@ -41,29 +41,32 @@ export class Request {
   public send(): Promise<Response> {
     return new Promise((resolve, reject) => {
       try {
-        this._curl.on("end", (statusCode: number, body: any, headers: Headers[]) => {
-          try {
-            const response = new Response(this, statusCode, body, headers);
+        this._curl.on(
+          "end",
+          (statusCode: number, body: any, headers: Headers[]) => {
+            try {
+              const response = new Response(this, statusCode, body, headers);
 
-            if (
-              response.isRedirect(statusCode) &&
-              this.options.redirect == "error"
-            ) {
-              reject(
-                new FetchError(
-                  `redirect mode is set to error: ${response.url}`,
-                  "no-redirect"
-                )
-              );
+              if (
+                response.isRedirect(statusCode) &&
+                this.options.redirect == "error"
+              ) {
+                reject(
+                  new FetchError(
+                    `redirect mode is set to error: ${response.url}`,
+                    "no-redirect"
+                  )
+                );
+              }
+
+              resolve(response);
+            } catch (error) {
+              reject(new FetchError(error.message, "system", error));
+            } finally {
+              this._curl.close();
             }
-
-            resolve(response);
-          } catch (error) {
-            reject(new FetchError(error.message, "system", error));
-          } finally {
-            this._curl.close();
           }
-        });
+        );
 
         this._curl.on("error", (error, errorCode: CurlCode) => {
           this._curl.close();
@@ -197,7 +200,6 @@ export class Request {
   }
 
   private setHeaders(): void {
-
     const headersString: string[] = this.headerStringArray;
     this._curl.setOpt(Curl.option.HTTPHEADER, headersString);
   }

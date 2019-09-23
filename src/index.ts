@@ -1,7 +1,10 @@
 import { OptionsRequest, Response } from "./types";
 import { Request } from "./request";
 
-export const fetch = (url: string, options?: OptionsRequest): Promise<Response> => {
+export const fetch = (
+  url: string,
+  options?: OptionsRequest
+): Promise<Response> => {
   if (!options) {
     options = {};
   }
