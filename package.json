@@ -62,7 +62,7 @@
     "test": "SERVER_PORT=8231 ts-mocha --exit tests/**/test.ts",
     "unit-test": "ts-mocha --exit tests/unit-tests/test.ts",
     "api-test": "SERVER_PORT=8231 ts-mocha --exit tests/api-tests/test.ts",
-    "coverage": "nyc npm run unit-test",
+    "coverage": "nyc npm run test",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm test && npm run lint",
