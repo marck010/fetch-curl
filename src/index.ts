@@ -7,7 +7,7 @@ export const fetch = (url: string, options?: OptionsRequest): Promise<Response> 
   }
 
   return new Request(url, options).send();
-}
+};
 
 export default fetch;
 export * from "./types";

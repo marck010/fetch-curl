@@ -68,7 +68,6 @@ export class Server {
     route.get("/test/get/ok", (req, res, next) => {
       try {
         res.status(200);
-        console.log(res)
         res.json(this.getResponse(req));
       } catch (error) {
         next(error);
