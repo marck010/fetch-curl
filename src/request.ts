@@ -35,6 +35,7 @@ export class Request {
     this.setVerbose();
     this.setHttpVersion();
     this.setTimeout();
+    this.setOpts();
   }
 
   public send(): Promise<Response> {
@@ -202,8 +203,13 @@ export class Request {
   }
 
   private setVerbose(): void {
-    let { verbose } = this.options;
-    verbose = verbose || this.default.verbose;
+    const { curl } = this.options;
+
+    if (!curl) {
+      return;
+    }
+
+    const verbose = curl.verbose || this.default.verbose;
     this._curl.setOpt(Curl.option.VERBOSE, verbose);
   }
 
@@ -223,6 +229,20 @@ export class Request {
 
     if (timeout) {
       this._curl.setOpt(Curl.option.TIMEOUT_MS, timeout);
+    }
+  }
+
+  private setOpts(): void {
+    const { curl } = this.options;
+
+    if (!curl) {
+      return;
+    }
+
+    if (curl.opts) {
+      for (const [option, value] of Object.entries(curl.opts)) {
+        this._curl.setOpt(parseInt(option) as never, value);
+      }
     }
   }
 }

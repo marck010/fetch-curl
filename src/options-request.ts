@@ -1,6 +1,13 @@
 import { RequestRedirect, HttpVersion, MethodHttp } from "./custom-types";
 import { HeadersInit } from "./headers";
 
+interface CurlOptions {
+  verbose?: boolean;
+  opts?: {
+    [option: string]: string | number | boolean | null;
+  };
+}
+
 export interface OptionsRequest {
   // query?: any;
   body?: any;
@@ -12,6 +19,6 @@ export interface OptionsRequest {
   // size?: number;
   timeout?: number;
   follow?: number;
-  verbose?: boolean;
   version?: HttpVersion;
+  curl?: CurlOptions;
 }

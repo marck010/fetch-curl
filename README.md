@@ -14,48 +14,66 @@ npm i fetch-curl --save
 
 ## Common Usage
 
-### Simple GET
+### GET
 
-- GET
+- Simple GET
 
 ```js
+const {fetch} = require("fetch-curl");
+
 const res = await fetch('https://restcountries-v1.p.rapidapi.com/all');
 
 const json = res.json();
 
-console.log(json)
 ```
-
-- Simple get with http 2
-
-```js
-const json = res.json();
-
-const res = await fetch('https://exemple.com/', {
-        version: 2,
-        method: 'GET'
-    });
-
-const json = res.json();
-```
-
 
 ### POST
 
-- Simple post with body and header
+- Exemple Post with all options
 
 ```js
-const res = await fetch('https://foo/', {
-        method: 'POST',
-        body: {
-            name: 'foo',
-            email:'foo@foo.com'
+const {fetch, Curl} = require("fetch-curl");
+
+const res = await fetch('https://localhost/post/', {
+    method: 'POST',
+    body: {
+        name: 'foo',
+        email: 'foo@foo.com'
+    },
+    headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+    },
+    redirect: "follow",
+    follow: 5,
+    proxy: 'https://localhost/proxy/',
+    timeout: 30000,
+    version: 1.1,
+    curl: {
+        verbose: true,
+        opts: {
+            [Curl.option.SSL_VERIFYPEER]: false
         }
-        headers: {
-            'accept': 'application/json',
-            'content-type': 'application/json',
-        }
-    });
+    }
+});
+
+const json = res.json();
+```
+
+
+#### Accessing Headers and other Meta data
+
+```js
+const res = await fetch('https://github.com/')
+console.log(res.ok);
+console.log(res.status);
+console.log(res.statusText);
+console.log(res.redirected);
+console.log(res.url);
+console.log(res.countRedirect);
+console.log(res.headers.raw());
+console.log(res.headers.has('content-type'));
+console.log(res.headers.get('content-type'));
 ```
 
 #### Default Setings
@@ -66,23 +84,55 @@ const res = await fetch('https://foo/', {
     method: 'GET',
     folow: 5,
     timeout: 60000,
-    proxyType: 'https',
-    useProxy: false,
     version: 1.1,
     redirect: 'follow'
 }
 ```
 
-### All Options
+#### Default Headers
 
-Header              | type             | values
+Name              | type             | values
+----------------- | -----------------|---------------------------------------
+content-length    | number           | automatically calculated
+
+### Options Request
+
+Fetch Standartd Options
+
+Name              | type               | values
 ------------------- | -----------------|---------------------------------------
-body                | any              | object, string
-headers             | Headers          | object
+body                | object           | object, string
+headers             | HeaderInit       | object
 method              | string           | GET, POST, PUT, DELETE, HEAD, OPTION, CONNECT
 redirect            | RequestRedirect  | folow, manual, error
-proxy               | string           | url
+
+Fetch Curl Extension Options
+
+Header              | type             | values
+------------------- |----------------- |---------------------------------------
+follow              | number           | max redirect
 timeout             | number           | value in milliseconds
-follow              | number           | numbr max of redirect
-verbose             | boolean          | true, false
+proxy               | string           | url
 version             | number           | 1, 1.1, 2
+curl                | CurlOptions      |
+
+- Types
+
+HeadersInit
+
+```js
+{
+  [key: string]: string | number;
+}
+```
+
+CurlOptions
+
+```js
+{
+    verbose: boolean,
+    opts: {
+        [key: string]: string | number | boolean | null;
+    }
+}
+```

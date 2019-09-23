@@ -29,9 +29,7 @@ const expect = chai.expect;
             });
 
             describe("Method setBody", () => {
-
                 describe("With body", () => {
-
                     it(`SetOpt params should be equal ${Curl.option.POSTFIELDS} and bodyString`, async () => {
 
                         const request = newRequest();
@@ -48,7 +46,6 @@ const expect = chai.expect;
                 });
 
                 describe("Without body", () => {
-
                     it(`SetOpt should not be called`, async () => {
                         const request = newRequest("", { body: undefined });
 
@@ -62,7 +59,6 @@ const expect = chai.expect;
             });
 
             describe("Method setFollowLocation", () => {
-
                 describe("With redirect 'follow'", () => {
                     const follow = 5;
                     const request = newRequest("", { redirect: "follow", follow: follow });
@@ -88,7 +84,6 @@ const expect = chai.expect;
                 describe("With redirect 'manual'", () => {
 
                     const request = newRequest("", { redirect: "manual" });
-
                     const setOpt = sinon.spy(request["_curl"], "setOpt");
 
                     request["setFollowLocation"]();
@@ -104,7 +99,6 @@ const expect = chai.expect;
 
                 describe("With redirect 'error'", () => {
                     const request = newRequest("", { redirect: "error" });
-
                     const setOpt = sinon.spy(request["_curl"], "setOpt");
 
                     request["setFollowLocation"]();
@@ -129,10 +123,7 @@ const expect = chai.expect;
                 const request = newRequest();
                 it("headerStringArray return should be equal option.headers", async () => {
                     const headerStringArrayReturned = request["headerStringArray"];
-                    const headerStringArray = Object.entries(request["options"].headers || []).map(header => {
-                        const [key, value] = header;
-                        return `${key}: ${value}`;
-                    });
+                    const headerStringArray = getHeaders(request);
 
                     expect(headerStringArrayReturned ? headerStringArrayReturned.toString() : "").be.equal(headerStringArray.toString());
                 });
@@ -141,7 +132,7 @@ const expect = chai.expect;
             describe("Method setHeaders", () => {
                 describe("With header", () => {
                     const request = newRequest();
-                    const headerStringArray = getHeaderStringArray(request["headers"]);
+                    const headerStringArray = getHeaders(request);
                     const setOpt = sinon.spy(request["_curl"], "setOpt");
 
                     request["setHeaders"]();
@@ -192,7 +183,6 @@ const expect = chai.expect;
             describe("Method setMethod", () => {
                 const method = "POST";
                 const request = newRequest("", { method });
-
                 const setOpt = sinon.spy(request["_curl"], "setOpt");
 
                 request["setMethod"]();
@@ -211,7 +201,6 @@ const expect = chai.expect;
                 describe("With protocol ", () => {
                     const proxy = "http://localhost:9000";
                     const request = newRequest("", { proxy });
-
                     const setOpt = sinon.spy(request["_curl"], "setOpt");
 
                     request["setProxy"]();
@@ -292,8 +281,7 @@ const expect = chai.expect;
 
             describe("Method setVerbose", () => {
                 const verbose = false;
-                const request = newRequest("", { verbose });
-
+                const request = newRequest("", { curl: { verbose } });
                 const setOpt = sinon.spy(request["_curl"], "setOpt");
 
                 request["setVerbose"]();
@@ -423,8 +411,13 @@ function newResponse(request: Request, statusCode: number, body: any, headers: H
     return new Response(request, statusCode, body, headers);
 }
 
-function getHeaderStringArray(defautHeaders?: HeadersInit): string[] {
-    return Object.entries(defautHeaders || {}).map(header => {
+function getHeaders(request?: Request): string[] {
+    const headers = { ...request["options"].headers, ...request["defaultHeaders"] };
+    return getHeaderStringArray(headers)
+}
+
+function getHeaderStringArray(headers?: HeadersInit): string[] {
+    return Object.entries(headers || {}).map(header => {
         const [key, value] = header;
         return `${key}: ${value}`;
     });
